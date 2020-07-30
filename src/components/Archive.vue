@@ -4,20 +4,22 @@
       <h2 class="archive-heading">NEWS</h2>
       <router-link class="archive-create" to="/news/new" v-if="authenticatedStatus">Create New Post</router-link>
     </div>
-    <div class="archive-content">
-      <router-link 
-        class="archive-link" 
-        v-for="(post, index) in posts" 
-        :to="`/news/${post.id}`"
-        :key="index"
-        >
-        <Article 
-          :image="post.image"
-          :date="post.createdAt"
-          :title="post.title"
-          />
-      </router-link>
-    </div>
+    <!-- <div class="archive-content"> -->
+      <transition-group name="card" tag="div" class="archive-content" appear>
+        <router-link 
+          class="archive-link" 
+          v-for="(post, index) in posts" 
+          :to="`/news/${post.id}`"
+          :key="index"
+          >
+          <Article 
+            :image="post.image"
+            :date="post.createdAt"
+            :title="post.title"
+            />
+        </router-link>
+      </transition-group>
+    <!-- </div> -->
     <div class="archive-button">
       <button class="button" @click="loadMore()">LOAD MORE</button>
     </div>
@@ -66,6 +68,8 @@ export default {
   methods: {
     loadMore () {
       this.numPost += 6
+    },
+    fetchMore () {
       this.$apollo.queries.posts.fetchMore ({
         variables: {
           limit: this.numPost
@@ -113,6 +117,7 @@ export default {
   flex-wrap: wrap
   margin: 0 -20px
   padding-bottom: 30px
+  transition: all 500ms ease-out
 
 .archive-link
   width: calc((100%/3) - 40px)
@@ -124,4 +129,15 @@ export default {
 .archive-button
   margin: 0 auto
   width: 340px
+
+.card-enter,
+.card-leave-to
+  opacity: 0
+  transform: translateY(100px)
+
+.card-enter-active,
+.card-leave-active
+  transition: all 400ms ease-out
+
+
 </style>

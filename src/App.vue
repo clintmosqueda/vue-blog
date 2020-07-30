@@ -60,19 +60,4 @@ button
   &:focus,
   &:active
     outline: none
-
-.button
-  background-color: #101010
-  color: #fff
-  font-size: 20px
-  font-weight: bold
-  font-family: 'Montserrat', sans-serif
-  width: 100%
-  display: flex
-  justify-content: center
-  align-items: center
-  height: 70px
-  border: none
-  cursor: pointer
-  letter-spacing: 0.09em
 </style>
