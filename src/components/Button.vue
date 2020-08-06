@@ -21,7 +21,7 @@ export default {
 <style lang="sass">
 .button
   color: #fff
-  background-color: #fff
+  background-color: #101010
   font-size: 20px
   font-weight: bold
   font-family: 'Montserrat', sans-serif
@@ -37,21 +37,21 @@ export default {
   z-index: 2
   transform-origin: center
 
-  &:before
-    position: absolute
-    top: 0
-    left: 0
-    width: 100%
-    height: 100%
-    background-color: #101010
-    z-index: -1
-    content: ''
-    transform-origin: center
-    display: block
-    transition: transform 300ms ease-out
-    pointer-events: none
+  // &:before
+  //   position: absolute
+  //   top: 0
+  //   left: 0
+  //   width: 100%
+  //   height: 100%
+  //   background-color: #101010
+  //   z-index: -1
+  //   content: ''
+  //   transform-origin: center
+  //   display: block
+  //   transition: transform 300ms ease-out
+  //   pointer-events: none
   
-  &:hover
-    &:before
-      transform: rotateX(180deg)
+  // &:hover
+  //   &:before
+  //     transform: rotateX(180deg)
 </style>

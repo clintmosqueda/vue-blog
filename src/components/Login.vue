@@ -75,6 +75,7 @@ export default {
   background-color: #fff
   display: block
   width: 100%
+  padding: 0 10px
 
 .login-copy
   font-size: 18px
