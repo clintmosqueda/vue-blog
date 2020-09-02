@@ -4,7 +4,6 @@ import Home from '@/views/Home'
 import Single from '@/views/Single'
 import Create from '@/views/Create'
 import Edit from '@/views/Edit'
-import Sample from '@/views/Sample'
 
 Vue.use(VueRouter)
 
@@ -28,11 +27,6 @@ const routes = [
     path: '/news/:id/edit',
     name: 'Edit',
     component: Edit
-  },
-  {
-    path: '/sample',
-    name: 'Sample',
-    component: Sample
   },
 ]
 
