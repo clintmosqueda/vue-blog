@@ -2,7 +2,7 @@
   <section class="comments">
     <article class="comments-content" v-for="comment in comments.slice().reverse()" :key="comment.id"> 
       <p class="comments-text">{{comment.content}}</p>
-      <time class="comments-date">{{comment.createdAt}}</time>
+      <time class="comments-date">{{comment.createdAt | dateFormat}}</time>
     </article>
   </section>
 </template>
@@ -16,8 +16,6 @@ export default {
 
 
 <style lang="sass">
-.comments
-
 .comments-content
   background-color: #F5F5F5
   padding: 48px 40px

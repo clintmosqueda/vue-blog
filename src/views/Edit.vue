@@ -8,41 +8,13 @@
           <span class="create-action" tag="span" @click="handleCancel">Cancel</span>
         </div>
         <textarea class="create-title" placeholder="Title" ref="postTitle" :value="post.title"></textarea>
-        <div class="create-image-wrap">
+        <div class="create-image-wrap" :style="{backgroundImage: `url('${featureImage}')`}">
           <label class="create-button" for="file-upload">UPLOAD IMAGE</label>
-          <input class="create-file-upload" id="file-upload" type="file">
+          <input class="create-file-upload" id="file-upload" @change="onImageSelected" type="file" accept="image/*">
         </div>
         <textarea class="create-content" placeholder="Content" ref="postContent" :value="post.content"></textarea>
       </form>
     </div>
-    <!-- <div class="wrapper">
-      <ApolloMutation
-        :mutation="updatePost"
-        :varibles="{
-          id: id,
-          title: post.title,
-          content: post.content
-        }"
-        :update="updatePostCache"
-      >
-      <template slot-scope="{mutate, loading, error}">
-        <form @submit.prevent="mutate" class="create-form">
-          <div class="create-actions">
-            <button class="create-action" type="submit">Save Post</button>
-            <span class="create-action" tag="span" @click="handleCancel">Cancel</span>
-          </div>
-          <textarea class="create-title" placeholder="Title" ref="postTitle" v-model="post.title"></textarea>
-          <div class="create-image-wrap">
-            <label class="create-button" for="file-upload">UPLOAD IMAGE</label>
-            <input class="create-file-upload" id="file-upload" type="file">
-          </div>
-          <textarea class="create-content" placeholder="Content" ref="postContent" v-model="post.content"></textarea>
-          <span v-if="loading">loading...</span>
-          <span v-if="error">error</span>
-        </form>
-      </template>
-      </ApolloMutation>
-    </div> -->
   </div>
 </template>
 
@@ -63,6 +35,7 @@ export default {
       updatePost: UPDATE_POST,
       post: '',
       title: '',
+      image: null,
       content: '',
       dummyImage,
       id: null,
@@ -71,24 +44,22 @@ export default {
   computed: {
     ...mapGetters([
       'cachedPost'
-    ])
-  },
-  beforeCreate() {
-    
+    ]),
+    featureImage() {
+      if(this.post.image) {
+        return this.post.image
+      } else {
+        return this.image
+      }
+    }
   },
   beforeMount () {
     this.id = Number(this.$route.params.id)
     
   },
-  mounted() {
-    // this.beforeUpdate = Object.assign({}, this.post)
-    console.log(this.title, 'mounte')
-    
-  },
   updated() {
     this.title = this.$refs.postTitle.value 
     this.content = this.$refs.postContent.value
-    // console.log(this.title)
   },
   apollo: {
     post: {
@@ -101,14 +72,17 @@ export default {
     }
   },
   methods: {
-    updatePostCache: (store, {data: {updatePost}}) => {
-      try {
-      const data = store.readQuery({ query: GET_POST_BY_ID, variables: { id: this.id } })
-      data.posts.push(updatePost)
-      store.writeQuery({ query: GET_POSTS, data})
-      } catch (error) {
-        console.log(error)
+    onImageSelected(event) {
+      const selectedImage = event.target.files[0]
+      this.toBase64(selectedImage);
+      console.log({event})
+    },
+    toBase64(fileObeject) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.image = e.target.result
       }
+      reader.readAsDataURL(fileObeject)
     },
     updateNews() {      
       this.$apollo.mutate({
@@ -116,20 +90,9 @@ export default {
         variables: {
           id: Number(this.$route.params.id),
           title: this.$refs.postTitle.value,
+          image: this.image,
           content: this.$refs.postContent.value
         },
-        // updatePostId (store, {data: { updatePost }}) {
-        //   const {post} = store.readQuery({
-        //     query: GET_POSTS
-        //   })
-        //   console.log(post)
-        //   store.writeQuery({
-        //     query: GET_POSTS,
-        //     data: {
-        //       post: post.concat([...post])
-        //     }
-        //   })
-        // }
         updatePostCache: (store, {data: {updatePost}}) => {
           try {
           const data = store.readQuery({ query: GET_POST_BY_ID, variables: { id: this.id } })
@@ -141,13 +104,12 @@ export default {
           }
         },
       })
-      this.$router.push(`/news/${this.id}`)
+      .then(response => {
+        this.$router.push(`/news/${this.id}`)
+      })
     },
     handleCancel() {
-      // console.log(JSON.parse(localStorage.getItem('cached-post')))
-      // this.post = JSON.parse(localStorage.getItem('cached-post'))
       this.$router.push(`/news/${this.id}`)
-      // window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/')
     }
   },
 }
@@ -189,11 +151,22 @@ export default {
 
 .create-image-wrap
   background-color: #D6D6D6
+  background-size: contain
+  background-position: center
+  background-repeat: no-repeat
   height: 540px
   position: relative
   display: flex
   align-items: flex-end
   margin-bottom: 36px
+
+.create-image
+  width: 100%
+  height: 100%
+  position: absolute
+  top: 0
+  left: 0
+  pointer-events: none
 
 .create-file-upload
   display: none

@@ -1,31 +1,26 @@
 <template>
   <div class="hero">
-    <ApolloQuery :query="query" :variables="{limit: maxSlides}">
-      <template slot-scope="{result: {loading, error, data}}">
-        <div v-if="loading">Loading...</div>
-        <div v-if="error">something goes wrong</div>
-        <div class="hero-inner" v-if="data">
-          <div class="hero-block" 
-            v-for="(bannerArticle, index) in data.posts" 
-            :key="index" 
-            :class="slide == index+1 ? 'is-active' : ''">
-            <section 
-              class="hero-image"
-              :style="`backgroundImage: url(${dummyImage})`">
-              <div class="wrapper">
-                <div class="hero-content">
-                  <div class="hero-content-inner">
-                    <h2 class="hero-heading">{{bannerArticle.title}}</h2>
-                    <time class="hero-time" v-bind:dateTime="bannerArticle.createdAt">{{bannerArticle.createdAt}}</time>
-                  </div>
+    <div class="hero-inner">
+      <div class="hero-block" 
+        v-for="(post, index) in posts" 
+        :key="index" 
+        :class="slide == index+1 ? 'is-active' : ''">
+        <section 
+          class="hero-image"
+          :style="`backgroundImage: url(${post.image})`">
+          <div class="wrapper">
+            <div class="hero-content">
+              <div class="hero-content-inner">
+                <div class="hero-heading-wrap">
+                  <h2 class="hero-heading">{{post.title}}</h2>
                 </div>
+                <time class="hero-time" v-bind:dateTime="post.createdAt">{{post.createdAt | dateFormat}}</time>
               </div>
-            </section>
+            </div>
           </div>
-        </div>
-      </template>
-    </ApolloQuery>
-
+        </section>
+      </div>
+    </div>
     <div class="hero-dots">
       <span class="hero-dot" 
         v-for="(n, index) in maxSlides"
@@ -44,8 +39,8 @@
 </template>
 
 <script>
-import dummyImage from '@/assets/mv.jpg'
-import { LIMIT_POSTS } from "@/gql/queries.js";
+import dummyImage from '@/assets/no-image.png'
+import { ALL_POST } from "@/gql/queries.js";
 
 export default {
   name: 'Hero',
@@ -53,8 +48,31 @@ export default {
     return {
       slide: 1,
       dummyImage,
-      query: LIMIT_POSTS,
+      query: ALL_POST,
       maxSlides: 3,
+      posts: [],
+    }
+  },
+  apollo: {
+    posts: {
+      query: ALL_POST,
+      variables () {
+        return {
+          limit: this.maxSlides
+        }
+      },
+      // result(res) {
+      //   console.log(res.data)
+      // }
+    }
+  },
+  computed: {
+    featureImage() {
+      if(this.post.image) {
+        return this.post.image
+      } else {
+        return this.dummyImage
+      }
     }
   },
   methods: {
@@ -99,6 +117,7 @@ export default {
   background-position: center
   background-repeat: no-repeat
   background-size: cover
+  background-color: #f1f1f1
 
 .hero-content
   height: 666px
@@ -111,6 +130,17 @@ export default {
 .hero-content-inner
   width: 560px
   text-align: right
+
+.hero-heading-wrap
+  opacity: 0
+  transform: translateX(100px)
+  transition-property: opacity, transform
+  transition-timing-function: ease-out
+  transition-duration: 500ms
+
+  .is-active &
+    opacity: 1
+    transform: translateX(0)
 
 .hero-heading
   font-size: 60px
@@ -129,6 +159,16 @@ export default {
   letter-spacing: 0.2em
   margin-top: 24px
   display: block
+  opacity: 0
+  transform: translateX(100px)
+  transition-property: opacity, transform
+  transition-timing-function: ease-out
+  transition-duration: 500ms
+  transition-delay: 150ms
+
+  .is-active &
+    opacity: 1
+    transform: translateX(0)
 
 .hero-dots
   position: absolute

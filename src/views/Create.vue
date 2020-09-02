@@ -2,28 +2,18 @@
   <div class="create">
     <Breadcrumbs title="Create New Post"/>
     <div class="wrapper">
-      <ApolloMutation
-        :mutation="addPostMutation"
-        :variables="{title: title, content: content}"
-        :update="handleSubmit"
-      >
-        <template slot-scope="{mutate, loading, error}">
-          <form @submit.prevent="mutate" method="post" class="create-form">
-            <div class="create-actions">
-              <button class="create-action" type="submit">Save Post</button>
-              <router-link class="create-action" tag="span" to="/">Cancel</router-link>
-            </div>
-            <textarea class="create-title" placeholder="Title" v-model="title"></textarea>
-            <div class="create-image-wrap">
-              <label class="create-button" for="file-upload">UPLOAD IMAGE</label>
-              <input class="create-file-upload" id="file-upload" type="file">
-            </div>
-            <textarea class="create-content" placeholder="Content" v-model="content"></textarea>
-            <span v-if="loading">loading</span>
-            <span v-if="error">something went wront</span>
-          </form>
-        </template>
-      </ApolloMutation>
+      <form @submit.prevent="addPost" method="post" class="create-form">
+        <div class="create-actions">
+          <button class="create-action" type="submit">Save Post</button>
+          <router-link class="create-action" tag="span" to="/">Cancel</router-link>
+        </div>
+        <textarea class="create-title" placeholder="Title" v-model="title"></textarea>
+        <div class="create-image-wrap" :style="{backgroundImage: `url('${uploadImage}')`}">
+          <label class="create-button" for="file-upload">UPLOAD IMAGE</label>
+          <input class="create-file-upload" id="file-upload" type="file" @change="onImageSelected">
+        </div>
+        <textarea class="create-content" placeholder="Content" v-model="content"></textarea>
+      </form>
     </div>
   </div>
 </template>
@@ -45,19 +35,45 @@ export default {
       addPostMutation: ADD_POST,
       title: '',
       content: '',
-      file: '',
+      image: null,
+    }
+  },
+  computed: {
+    uploadImage() {
+      return this.image
     }
   },
   methods: {
-    handleSubmit (store, {data: { addPost }}) {
-      const { posts } = store.readQuery({ query: GET_POSTS })
-      store.writeQuery({
-        query: GET_POSTS,
-        data: {
-          posts: posts.push(addPost)
+    onImageSelected(event) {
+      const selectedImage = event.target.files[0]
+      this.toBase64(selectedImage);
+      console.log({event})
+    },
+    toBase64(fileObeject) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.image = e.target.result
+      }
+      reader.readAsDataURL(fileObeject)
+    },
+    addPost() {
+      this.$apollo
+      .mutate({
+        mutation: ADD_POST,
+        variables: {
+          title: this.title,
+          content: this.content,
+          image: this.image
+        },
+        update: (store, {data: {addPost}}) => {
+          const data = store.readQuery({query: GET_POSTS})
+          data.posts.push(addPost)
+          store.writeQuery({query: GET_POSTS, data})
         }
-        })
-      this.$router.replace('/')
+      })
+      .then(response => {
+        this.$router.replace('/')
+      })
     }
   },
 }

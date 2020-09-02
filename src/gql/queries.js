@@ -55,8 +55,8 @@ export const GET_POST_BY_ID = gql`
   }
 `
 
-export const LIMIT_POSTS = gql`
-  query postList($limit: Int) {
+export const ALL_POST = gql`
+  query allPost($limit: Int) {
     posts( pagination: {limit: $limit}) {
       id
       title

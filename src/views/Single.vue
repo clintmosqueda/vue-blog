@@ -6,9 +6,9 @@
         <span class="single-action" @click="onEdit">Edit Post</span>
       </div>
       <div class="single-header">
-        <time class="single-time">{{post.createdAt}}</time>
+        <time class="single-time">{{post.createdAt | dateFormat}}</time>
         <h1 class="single-title">{{post.title}}</h1>
-        <div class="single-image" :style="`backgroundImage: url(${dummyImage})`"></div>
+        <div class="single-image" :style="`backgroundImage: url(${featureImage})`"></div>
       </div>
       <div class="single-content">
         <p>{{post.content}}</p>
@@ -82,7 +82,12 @@ export default {
   computed: {
     ...mapGetters([
       'authenticatedStatus'
-    ])
+    ]),
+    featureImage() {
+      if(this.post.image) {
+        return this.post.image
+      }
+    }
   },
   watch: {
     '$route' (to, from) {
@@ -165,6 +170,7 @@ export default {
   background-repeat: no-repeat
   background-size: cover
   margin-bottom: 10px
+  background-color: #f1f1f1
 
 .single-content
   padding-bottom: 82px

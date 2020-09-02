@@ -1,19 +1,28 @@
 <template>
   <article class="article">
-    <div class="article-image" :style="`backgroundImage: url(${dummyImage})`"></div>
-    <time class="article-date">{{date}}</time>
+    <div class="article-image" :style="`backgroundImage: url(${thumbnail})`"></div>
+    <time class="article-date">{{date | dateFormat}}</time>
     <h3 class="article-title">{{title}}</h3>
   </article>
 </template>
 
 <script>
-import dummyImage from '@/assets/dummy-image.jpg'
+import dummyImage from '@/assets/no-image.png'
 export default {
   name: 'Article',
   props: ['image', 'date', 'title'],
   data() {
     return {
       dummyImage 
+    }
+  },
+  computed: {
+    thumbnail() {
+      if(this.image) {
+        return this.image
+      } else {
+        return dummyImage
+      }
     }
   },
 }
@@ -30,6 +39,7 @@ export default {
   background-repeat: no-repeat
   background-size: cover
   margin-bottom: 25px
+  background-color: #f1f1f1
 
 .article-date
   font-family: 'Montserrat', sans-serif

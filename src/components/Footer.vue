@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="wrapper">
       <div class="footer-content">
-        <img class="footer-logo" src="../assets/logo-alt.png" alt=""/>
+        <router-link to="/"><img class="footer-logo" src="../assets/logo-alt.png" alt=""/></router-link>
         <p class="footer-copy">サンプルテキストサンプル ルテキストサンプルテキストサ<br/>ンプルテキストサンプル ルテキスト</p>
       </div>
     </div>

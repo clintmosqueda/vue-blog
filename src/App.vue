@@ -2,7 +2,9 @@
   <div id="app" :style="[showForm ? {'overflow' : 'hidden', 'height' : '100vh'} : '']">
     <Header/>
     <Form/>
-    <router-view :key="$route.fullPath"/>
+    <transition name="page-fade">
+      <router-view :hey="$route.fullPath"/>
+    </transition>
     <Footer/>
   </div>
 </template>
@@ -60,4 +62,13 @@ button
   &:focus,
   &:active
     outline: none
+
+.page-fade-enter-active,
+.page-fade-leave-active
+  transition: opacity 0.7s ease-in-out
+
+.page-fade-enter,
+.page-fade-leave-to
+  opacity: 0
+
 </style>

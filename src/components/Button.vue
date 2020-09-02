@@ -36,22 +36,4 @@ export default {
   position: relative
   z-index: 2
   transform-origin: center
-
-  // &:before
-  //   position: absolute
-  //   top: 0
-  //   left: 0
-  //   width: 100%
-  //   height: 100%
-  //   background-color: #101010
-  //   z-index: -1
-  //   content: ''
-  //   transform-origin: center
-  //   display: block
-  //   transition: transform 300ms ease-out
-  //   pointer-events: none
-  
-  // &:hover
-  //   &:before
-  //     transform: rotateX(180deg)
 </style>

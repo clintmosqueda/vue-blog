@@ -18,5 +18,6 @@ export default {
     Hero,
     Archive
   },
+
 }
 </script>

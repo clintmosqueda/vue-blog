@@ -6,6 +6,13 @@ import { createProvider } from './vue-apollo'
 
 Vue.config.productionTip = false
 
+Vue.filter('dateFormat', function(date) {
+  if (date) {
+    return date.slice(0, 11)
+  }
+  return
+})
+
 new Vue({
   router,
   store,

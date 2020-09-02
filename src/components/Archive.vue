@@ -4,22 +4,20 @@
       <h2 class="archive-heading">NEWS</h2>
       <router-link class="archive-create" to="/news/new" v-if="authenticatedStatus">Create New Post</router-link>
     </div>
-    <!-- <div class="archive-content"> -->
-      <transition-group name="card" tag="div" class="archive-content" appear>
-        <router-link 
-          class="archive-link" 
-          v-for="(post, index) in posts" 
-          :to="`/news/${post.id}`"
-          :key="index"
-          >
-          <Article 
-            :image="post.image"
-            :date="post.createdAt"
-            :title="post.title"
-            />
-        </router-link>
-      </transition-group>
-    <!-- </div> -->
+    <div class="archive-content">
+      <router-link 
+        class="archive-link" 
+        v-for="post in posts" 
+        :to="`/news/${post.id}`"
+        :key="post.id"
+        >
+        <Article 
+          :image="post.image"
+          :date="post.createdAt"
+          :title="post.title"
+          />
+      </router-link>
+    </div>
     <div class="archive-button">
       <button class="button" @click="loadMore()">LOAD MORE</button>
     </div>
@@ -30,7 +28,7 @@
 
 
 import { mapGetters } from 'vuex'
-import { LIMIT_POSTS } from "@/gql/queries.js";
+import { ALL_POST } from "@/gql/queries.js";
 import Article from '@/components/Article'
 import Button from '@/components/Button' 
 
@@ -44,20 +42,17 @@ export default {
   data() {
     return {
       posts: [],
-      numPost: 6
+      initPost: 6
     }
   },
   apollo: {
     posts: {
-      query: LIMIT_POSTS,
+      query: ALL_POST,
       variables () {
         return {
-          limit: this.numPost
+          limit: this.initPost
         }
       },
-      // result(res) {
-      //   console.log(res.data)
-      // }
     }
   },
   computed: {
@@ -67,12 +62,12 @@ export default {
   },
   methods: {
     loadMore () {
-      this.numPost += 6
+      this.initPost += 6
     },
     fetchMore () {
       this.$apollo.queries.posts.fetchMore ({
         variables: {
-          limit: this.numPost
+          limit: this.initPost
         },
         updateQuery (cache, {fetchMoreResult}) {
           if(!fetchMoreResult) {

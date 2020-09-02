@@ -10,10 +10,6 @@
         <label class="register-label" for="">Password</label>
         <input class="register-input" type="password" v-model="user.password">
       </div>
-      <!-- <div class="register-holder">
-        <label class="register-label" for="">Comfirm Password</label>
-        <input class="register-input" type="password" v-model="confirmPassword">
-      </div> -->
       <Button type="submit" text="REGISTER"/>
       <p class="register-copy">Already have an account? <span @click="openFormRegister">LOGIN HERE</span></p>
     </form>
