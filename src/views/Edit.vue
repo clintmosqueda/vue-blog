@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import imageUpload from '@/mixins/ImageUpload'
 import { mapGetters } from 'vuex'
 import dummyImage from '@/assets/mv.jpg'
 import Breadcrumbs from '@/components/Breadcrumbs'
@@ -30,6 +31,7 @@ export default {
   components: {
     Breadcrumbs
   },
+  mixins: [imageUpload],
   data() {
     return {
       post: '',
@@ -38,7 +40,6 @@ export default {
       content: '',
       dummyImage,
       id: null,
-      isImageUpload: false,
     }
   },
   computed: {
@@ -74,23 +75,6 @@ export default {
     }
   },
   methods: {
-    toBase64(fileObeject) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.image = e.target.result
-      }
-      reader.readAsDataURL(fileObeject)
-    },
-    onImageSelected(event) {
-      const selectedImage = event.target.files[0]
-      if(selectedImage) {
-        this.isImageUpload = true
-      } else {
-        this.isImageUpload = false
-      }
-      this.toBase64(selectedImage);
-      console.log({event})
-    },
     editPost() {      
       this.$apollo.mutate({
         mutation: UPDATE_POST,

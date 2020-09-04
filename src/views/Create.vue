@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import imageUpload from '@/mixins/ImageUpload'
 import { ADD_POST } from '@/gql/mutations'
 import { GET_POSTS } from '@/gql/queries'
 import Breadcrumbs from '@/components/Breadcrumbs'
@@ -30,6 +31,7 @@ export default {
     Breadcrumbs,
     Button
   },
+  mixins: [imageUpload],
   data() {
     return {
       addPostMutation: ADD_POST,
@@ -44,18 +46,6 @@ export default {
     }
   },
   methods: {
-    onImageSelected(event) {
-      const selectedImage = event.target.files[0]
-      this.toBase64(selectedImage);
-      console.log({event})
-    },
-    toBase64(fileObeject) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.image = e.target.result
-      }
-      reader.readAsDataURL(fileObeject)
-    },
     addPost() {
       this.$apollo
       .mutate({
