@@ -2,7 +2,7 @@
   <div class="create">
     <Breadcrumbs title="Edit Post"/>
     <div class="wrapper">
-      <form @submit.prevent="updateNews" class="create-form">
+      <form @submit.prevent="editPost" class="create-form">
         <div class="create-actions">
           <button class="create-action" type="submit">Save Post</button>
           <span class="create-action" tag="span" @click="handleCancel">Cancel</span>
@@ -32,13 +32,13 @@ export default {
   },
   data() {
     return {
-      updatePost: UPDATE_POST,
       post: '',
       title: '',
       image: null,
       content: '',
       dummyImage,
       id: null,
+      isImageUpload: false,
     }
   },
   computed: {
@@ -46,16 +46,18 @@ export default {
       'cachedPost'
     ]),
     featureImage() {
-      if(this.post.image) {
-        return this.post.image
-      } else {
+      if(this.isImageUpload) {
         return this.image
+      } else {
+        return this.post.image
       }
     }
   },
+  mounted() {
+    this.image = this.post.image
+  },
   beforeMount () {
     this.id = Number(this.$route.params.id)
-    
   },
   updated() {
     this.title = this.$refs.postTitle.value 
@@ -72,11 +74,6 @@ export default {
     }
   },
   methods: {
-    onImageSelected(event) {
-      const selectedImage = event.target.files[0]
-      this.toBase64(selectedImage);
-      console.log({event})
-    },
     toBase64(fileObeject) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -84,7 +81,17 @@ export default {
       }
       reader.readAsDataURL(fileObeject)
     },
-    updateNews() {      
+    onImageSelected(event) {
+      const selectedImage = event.target.files[0]
+      if(selectedImage) {
+        this.isImageUpload = true
+      } else {
+        this.isImageUpload = false
+      }
+      this.toBase64(selectedImage);
+      console.log({event})
+    },
+    editPost() {      
       this.$apollo.mutate({
         mutation: UPDATE_POST,
         variables: {
@@ -93,15 +100,19 @@ export default {
           image: this.image,
           content: this.$refs.postContent.value
         },
-        updatePostCache: (store, {data: {updatePost}}) => {
-          try {
-          const data = store.readQuery({ query: GET_POST_BY_ID, variables: { id: this.id } })
-          data.posts.conct({...updatePost})
+        update: (store, {data: {updatePost}}) => {
+          const data = store.readQuery({ query: GET_POSTS })
           console.log(data)
-          store.writeQuery({ query: GET_POST_BY_ID, data})
-          } catch (error) {
-            console.log(error)
-          }
+          data.post.push(updatePost)
+          store.writeQuery({ query: GET_POST_BY_ID, ...data})
+          // try {
+          // const data = store.readQuery({ query: GET_POST_BY_ID, variables: { id: this.id } })
+          // data.posts.concat({...updatePost})
+          // console.log(data)
+          // store.writeQuery({ query: GET_POST_BY_ID, ...data})
+          // } catch (error) {
+          //   console.log(error)
+          // }
         },
       })
       .then(response => {
