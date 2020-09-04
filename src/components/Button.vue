@@ -36,4 +36,8 @@ export default {
   position: relative
   z-index: 2
   transform-origin: center
+
+  &.isDisable
+    pointer-events: none
+    background-color: #d2d2d2
 </style>

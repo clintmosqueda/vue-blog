@@ -7,7 +7,7 @@
     <div class="archive-content">
       <router-link 
         class="archive-link" 
-        v-for="post in posts" 
+        v-for="post in limitPost" 
         :to="`/news/${post.id}`"
         :key="post.id"
         >
@@ -19,7 +19,7 @@
       </router-link>
     </div>
     <div class="archive-button">
-      <button class="button" @click="loadMore()">LOAD MORE</button>
+      <button class="button" :class="{isDisable : hideButton }" @click="loadMore()">LOAD MORE</button>
     </div>
   </section>
 </template>
@@ -28,7 +28,7 @@
 
 
 import { mapGetters } from 'vuex'
-import { ALL_POST } from "@/gql/queries.js";
+import { GET_POSTS } from "@/gql/queries.js";
 import Article from '@/components/Article'
 import Button from '@/components/Button' 
 
@@ -47,39 +47,27 @@ export default {
   },
   apollo: {
     posts: {
-      query: ALL_POST,
-      variables () {
-        return {
-          limit: this.initPost
-        }
-      },
+      query: GET_POSTS,
     }
   },
   computed: {
     ...mapGetters([
       'authenticatedStatus'
     ]),
+    totalPost() {
+      return this.posts.length;
+    },
+    limitPost() {
+      return this.posts.slice(0,this.initPost)
+    },
+    hideButton() {
+      return this.initPost >= this.totalPost ? true : false
+    }
   },
   methods: {
     loadMore () {
       this.initPost += 6
     },
-    fetchMore () {
-      this.$apollo.queries.posts.fetchMore ({
-        variables: {
-          limit: this.initPost
-        },
-        updateQuery (cache, {fetchMoreResult}) {
-          if(!fetchMoreResult) {
-            return cache
-          }
-          const newData = fetchMoreResult
-          return Object.assign({}, cache, {
-            posts: [...cache.posts, ...fetchMoreResult.posts]
-          })
-        }   
-      })
-    }
   },
 }
 </script>

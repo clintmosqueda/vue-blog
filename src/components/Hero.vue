@@ -2,12 +2,12 @@
   <div class="hero">
     <div class="hero-inner">
       <div class="hero-block" 
-        v-for="(post, index) in posts" 
+        v-for="(post, index) in maxSlides" 
         :key="index" 
         :class="slide == index+1 ? 'is-active' : ''">
         <section 
           class="hero-image"
-          :style="`backgroundImage: url(${post.image})`">
+          :style="`backgroundImage: url(${post.image ? post.image : dummyImage})`">
           <div class="wrapper">
             <div class="hero-content">
               <div class="hero-content-inner">
@@ -23,7 +23,7 @@
     </div>
     <div class="hero-dots">
       <span class="hero-dot" 
-        v-for="(n, index) in maxSlides"
+        v-for="(n, index) in maxSlide"
         :id="index+1" 
         :key="index"
         :class="slide == index+1 ? 'is-active' : ''"
@@ -40,51 +40,38 @@
 
 <script>
 import dummyImage from '@/assets/no-image.png'
-import { ALL_POST } from "@/gql/queries.js";
+import { GET_POSTS } from "@/gql/queries.js";
 
 export default {
   name: 'Hero',
   data() {
     return {
       slide: 1,
+      maxSlide: 3,
       dummyImage,
-      query: ALL_POST,
-      maxSlides: 3,
       posts: [],
     }
   },
   apollo: {
     posts: {
-      query: ALL_POST,
-      variables () {
-        return {
-          limit: this.maxSlides
-        }
-      },
-      // result(res) {
-      //   console.log(res.data)
-      // }
+      query: GET_POSTS,
     }
   },
   computed: {
-    featureImage() {
-      if(this.post.image) {
-        return this.post.image
-      } else {
-        return this.dummyImage
-      }
+    maxSlides() {
+      return this.posts.slice(0,this.maxSlide)
     }
   },
   methods: {
     handlePrev() {
       if(this.slide <= 1) {
-        this.slide = this.maxSlides;
+        this.slide = this.maxSlide;
       } else {
         this.slide -= 1
       }
     },
     handleNext() {
-      if (this.slide >= this.maxSlides ) {
+      if (this.slide >= this.maxSlide ) {
         this.slide = 1
       } else {
         this.slide ++
