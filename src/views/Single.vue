@@ -31,7 +31,7 @@
           <form class="single-form" @submit.prevent="mutate">
             <textarea class="single-form-textarea" placeholder="Write comment" v-model="contents"></textarea>
             <Button class="single-button" type="submit" text="Submit"/>
-            <span v-if="loading">posting... kajsdhkajdhkajhdkajhdkajhdkajhdkajshd</span>
+            <span v-if="loading">posting...</span>
             <span v-if="error">something went wrong</span>
           </form>
         </template>

@@ -2,18 +2,29 @@
   <div class="create">
     <Breadcrumbs title="Create New Post"/>
     <div class="wrapper">
-      <form @submit.prevent="insertPost" method="post" class="create-form">
-        <div class="create-actions">
-          <button class="create-action" type="submit">Save Post</button>
-          <router-link class="create-action" tag="span" to="/">Cancel</router-link>
-        </div>
-        <textarea class="create-title" placeholder="Title" v-model="title"></textarea>
-        <div class="create-image-wrap" :style="{backgroundImage: `url('${uploadImage}')`}">
-          <label class="create-button" for="file-upload">UPLOAD IMAGE</label>
-          <input class="create-file-upload" id="file-upload" type="file" @change="onImageSelected">
-        </div>
-        <textarea class="create-content" placeholder="Content" v-model="content"></textarea>
-      </form>
+      <ApolloMutation
+        :mutation="addPostMutation"
+        :variables="{title: title, content: content, image: image}"
+        :update="updatePost"
+        @done="onDone"
+      >
+      <template slot-scope="{mutate, loading, error}">
+        <form @submit.prevent="mutate" class="create-form">
+          <div class="create-actions">
+            <button class="create-action" type="submit">Save Post</button>
+            <router-link class="create-action" tag="span" to="/">Cancel</router-link>
+          </div>
+          <textarea class="create-title" placeholder="Title" v-model="title"></textarea>
+          <div class="create-image-wrap" :style="{backgroundImage: `url('${uploadImage}')`}">
+            <label class="create-button" for="file-upload">UPLOAD IMAGE</label>
+            <input class="create-file-upload" id="file-upload" type="file" @change="onImageSelected">
+          </div>
+          <textarea class="create-content" placeholder="Content" v-model="content"></textarea>
+        </form>
+        <span v-if="loading">posting comment...</span>
+        <span v-if="error">something went wrong</span>
+      </template>
+      </ApolloMutation>
     </div>
   </div>
 </template>
@@ -46,35 +57,18 @@ export default {
     }
   },
   methods: {
-    insertPost() {
-      this.$apollo
-      .mutate({
-        mutation: ADD_POST,
-        variables: {
-          title: this.title,
-          content: this.content,
-          image: this.image
-        },
-        update: (cache, {data: {addPost}}) => {
-          try {
-            console.log({cache})
-            const { posts } = cache.readQuery({query: GET_POSTS})
-            // data.posts.push(addPost)
-            cache.writeQuery({
-              query: GET_POSTS, 
-              data: {
-                posts: posts.concat({
-                  ...addPost
-                })
-              }
-              })
-          } catch (error) {
-            console.log(error)
-          }
-        }
+    onDone() {
+      this.$router.replace('/')
+    },
+    updatePost(store, {data: { addPost }}) {
+      const { posts } = store.readQuery({
+        query: GET_POSTS
       })
-      .then(response => {
-        this.$router.replace('/')
+      store.writeQuery({
+        query: GET_POSTS,
+        data: {
+          posts: posts.push(addPost)
+        }
       })
     }
   },
