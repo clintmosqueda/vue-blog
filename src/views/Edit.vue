@@ -5,7 +5,7 @@
       <form @submit.prevent="editPost" class="create-form">
         <div class="create-actions">
           <button class="create-action" type="submit">Save Post</button>
-          <span class="create-action" tag="span" @click="handleCancel">Cancel</span>
+          <span class="create-action" tag="span" @click="onDone">Cancel</span>
         </div>
         <textarea class="create-title" placeholder="Title" ref="postTitle" :value="post.title"></textarea>
         <div class="create-image-wrap" :style="{backgroundImage: `url('${featureImage}')`}">
@@ -14,13 +14,35 @@
         </div>
         <textarea class="create-content" placeholder="Content" ref="postContent" :value="post.content"></textarea>
       </form>
+      <!-- <ApolloMutation
+        :mutation="updatePostMutation"
+        :variables="{id: id, title: title, content: content, image: image}"
+        :update="editPost"
+        @done="onDone"
+      >
+        <template slot-scope="{mutate, loading, error}">
+          <form @submit.prevent="mutate" class="create-form">
+            <div class="create-actions">
+              <button class="create-action" type="submit">Save Post</button>
+              <span class="create-action" tag="span" @click="onDone">Cancel</span>
+            </div>
+            <textarea class="create-title" placeholder="Title" ref="postTitle" v-model="post.title"></textarea>
+            <div class="create-image-wrap" :style="{backgroundImage: `url('${featureImage}')`}">
+              <label class="create-button" for="file-upload">UPLOAD IMAGE</label>
+              <input class="create-file-upload" id="file-upload" @change="onImageSelected" type="file" accept="image/*">
+            </div>
+            <textarea class="create-content" placeholder="Content" ref="postContent" v-model="post.content"></textarea>
+          </form>
+          <span v-if="loading">updating...</span>
+          <span v-if="error">something went wrong</span>
+        </template>
+      </ApolloMutation> -->
     </div>
   </div>
 </template>
 
 <script>
 import imageUpload from '@/mixins/ImageUpload'
-import { mapGetters } from 'vuex'
 import dummyImage from '@/assets/mv.jpg'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { GET_POST_BY_ID, GET_POSTS } from '@/gql/queries'
@@ -34,6 +56,7 @@ export default {
   mixins: [imageUpload],
   data() {
     return {
+      updatePostMutation: UPDATE_POST,
       post: '',
       title: '',
       image: null,
@@ -43,9 +66,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'allPost'
-    ]),
     featureImage() {
       if(this.isImageUpload) {
         return this.image
@@ -55,14 +75,11 @@ export default {
     }
   },
   mounted() {
-    this.image = this.post.image
+    this.image = this.post.image;
+    console.log(this.id)
   },
   beforeMount () {
     this.id = Number(this.$route.params.id)
-  },
-  updated() {
-    this.title = this.$refs.postTitle.value 
-    this.content = this.$refs.postContent.value
   },
   apollo: {
     post: {
@@ -74,7 +91,28 @@ export default {
       }
     }
   },
+  updated() {
+    this.title = this.$refs.postTitle.value
+    this.content = this.$refs.postContent.value
+  },
   methods: {
+    onDone() {
+      // this.$router.push(`/news/${this.id}`)
+    },
+    // editPost (store, {data: {updatePost}}) {
+    //   const data = store.readQuery({
+    //     query: GET_POST_BY_ID,
+    //     variables: { id: this.id }
+    //   })
+    //   // data.post = [{...data.post, ...updatePost}]
+    //   store.writeQuery({
+    //     query: GET_POST_BY_ID,
+    //     variables: {id: this.id},
+    //     data: {
+    //       post: {...data.post, ...updatePost}
+    //     }
+    //   })
+    // },
     editPost() {      
       this.$apollo.mutate({
         mutation: UPDATE_POST,
@@ -85,25 +123,47 @@ export default {
           content: this.$refs.postContent.value
         },
         update: (store, {data: {updatePost}}) => {
-          const data = store.readQuery({ query: GET_POSTS })
-          console.log(data)
-          data.post.push(updatePost)
-          store.writeQuery({ query: GET_POST_BY_ID, ...data})
-          // try {
-          // const data = store.readQuery({ query: GET_POST_BY_ID, variables: { id: this.id } })
+          // const data = store.readQuery({ 
+          //   query: GET_POST_BY_ID, 
+          //   variables: {id: this.id}
+          // })
+          // console.log({data})
+          // console.log({updatePost})
+          // // data.post.push(updatePost)
+          // store.writeQuery({ 
+          //   query: GET_POST_BY_ID,
+          //   variables: {id: this.id},
+          //   data: {
+          //     // post: {...post, updatePost}
+          //     post: post.push(...updatePost)
+          //   }
+          //   })
+          try {
+          const data = store.readQuery({ 
+            query: GET_POST_BY_ID, 
+            variables: { 
+              id: this.id 
+              } 
+            })
           // data.posts.concat({...updatePost})
-          // console.log(data)
-          // store.writeQuery({ query: GET_POST_BY_ID, ...data})
-          // } catch (error) {
-          //   console.log(error)
-          // }
+          console.log(updatePost)
+          store.writeQuery({ 
+            query: GET_POST_BY_ID, 
+            variables: {
+              id: this.id
+            },
+
+            ...data})
+          } catch (error) {
+            console.log(error)
+          }
         },
       })
       .then(response => {
         this.$router.push(`/news/${this.id}`)
       })
     },
-    handleCancel() {
+    handleBack() {
       this.$router.push(`/news/${this.id}`)
     }
   },
