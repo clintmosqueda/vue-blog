@@ -52,7 +52,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'authenticatedStatus'
+      'authenticatedStatus',
     ]),
     totalPost() {
       return this.posts.length;

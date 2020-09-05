@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'cachedPost'
+      'allPost'
     ]),
     featureImage() {
       if(this.isImageUpload) {

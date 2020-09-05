@@ -2,7 +2,7 @@
   <div class="create">
     <Breadcrumbs title="Create New Post"/>
     <div class="wrapper">
-      <form @submit.prevent="addPost" method="post" class="create-form">
+      <form @submit.prevent="insertPost" method="post" class="create-form">
         <div class="create-actions">
           <button class="create-action" type="submit">Save Post</button>
           <router-link class="create-action" tag="span" to="/">Cancel</router-link>
@@ -46,7 +46,7 @@ export default {
     }
   },
   methods: {
-    addPost() {
+    insertPost() {
       this.$apollo
       .mutate({
         mutation: ADD_POST,
@@ -55,10 +55,22 @@ export default {
           content: this.content,
           image: this.image
         },
-        update: (store, {data: {addPost}}) => {
-          const data = store.readQuery({query: GET_POSTS})
-          data.posts.push(addPost)
-          store.writeQuery({query: GET_POSTS, data})
+        update: (cache, {data: {addPost}}) => {
+          try {
+            console.log({cache})
+            const { posts } = cache.readQuery({query: GET_POSTS})
+            // data.posts.push(addPost)
+            cache.writeQuery({
+              query: GET_POSTS, 
+              data: {
+                posts: posts.concat({
+                  ...addPost
+                })
+              }
+              })
+          } catch (error) {
+            console.log(error)
+          }
         }
       })
       .then(response => {

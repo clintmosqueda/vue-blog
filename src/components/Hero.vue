@@ -138,7 +138,7 @@ export default {
   display: inline
   padding: 8px 0
   line-height: 1.56
-  word-break: break-all
+  word-break: break-word
 
 .hero-time
   font-size: 28px

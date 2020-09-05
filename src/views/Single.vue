@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import { GET_POST_BY_ID } from '@/gql/queries'
 import { ADD_COMMENT } from '@/gql/mutations'
 import Comments from '@/components/Comments'
@@ -95,13 +95,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'setCachedPost'
-    ]),
     onEdit() {
       this.$router.push(`/news/${this.id}/edit`)
-      this.setCachedPost(this.id)
-
     },
     onComment () {
       this.contents = ''
