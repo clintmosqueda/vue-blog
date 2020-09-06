@@ -55,7 +55,17 @@ export default {
       title: '',
       content: '',
       image: null,
+      totalPost: null
     }
+  },
+  apollo: {
+    posts: {
+      query: GET_POSTS,
+    }
+  },
+  mounted() {
+    this.totalPost = this.posts.length + 1
+    console.log(this.totalPost)
   },
   computed: {
     uploadImage() {
@@ -66,7 +76,7 @@ export default {
   methods: {
     ...mapMutations(['openDialog']),
     onDone() {
-      this.$router.replace('/')
+      this.$router.replace(`/news/${this.totalPost}`)
     },
     updatePost(store, {data: { addPost }}) {
       const { posts } = store.readQuery({
