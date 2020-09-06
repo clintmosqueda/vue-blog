@@ -11,6 +11,7 @@ export default new Vuex.Store({
     accessToken: null,
     authenticatedStatus: false,
     formModal: false,
+    dialogModal: false,
     willRegister: false,
   },
   getters: {
@@ -22,6 +23,9 @@ export default new Vuex.Store({
     },
     showForm (state) {
       return state.formModal
+    },
+    showDialog (state) {
+      return state.dialogModal
     },
     showFormRegister (state) {
       return state.willRegister
@@ -49,6 +53,12 @@ export default new Vuex.Store({
       if (state.formModal === false) {
         state.willRegister = false
       }
+    },
+    openDialog (state) {
+      state.dialogModal = true
+    },
+    closeDialog(state) {
+      state.dialogModal = false
     },
     openFormRegister (state) {
       state.willRegister = !state.willRegister

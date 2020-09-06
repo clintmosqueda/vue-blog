@@ -5,7 +5,7 @@
       <form @submit.prevent="editPost" class="create-form">
         <div class="create-actions">
           <button class="create-action" type="submit">Save Post</button>
-          <span class="create-action" tag="span" @click="handleCancel">Cancel</span>
+          <span class="create-action" @click="openDialog">Cancel</span>
         </div>
         <textarea class="create-title" placeholder="Title" ref="postTitle" :value="post.title"></textarea>
         <div class="create-image-wrap" :style="{backgroundImage: `url('${featureImage}')`}">
@@ -15,21 +15,26 @@
         <textarea class="create-content" placeholder="Content" ref="postContent" :value="post.content"></textarea>
       </form>
     </div>
+    <transition name="prompt-dialog-fade">
+      <Modal v-if="showDialog"/>
+    </transition>
   </div>
 </template>
 
 <script>
 import imageUpload from '@/mixins/ImageUpload'
-import { mapGetters } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
 import dummyImage from '@/assets/mv.jpg'
 import Breadcrumbs from '@/components/Breadcrumbs'
+import Modal from '@/components/Modal'
 import { GET_POST_BY_ID, GET_POSTS } from '@/gql/queries'
 import { UPDATE_POST } from '@/gql/mutations'
 
 export default {
   name: 'Edit',
   components: {
-    Breadcrumbs
+    Breadcrumbs,
+    Modal
   },
   mixins: [imageUpload],
   data() {
@@ -44,7 +49,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'allPost'
+      'showDialog'
     ]),
     featureImage() {
       if(this.isImageUpload) {
@@ -75,6 +80,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['openDialog']),
     editPost() {      
       this.$apollo.mutate({
         mutation: UPDATE_POST,

@@ -43,7 +43,6 @@ export default {
   z-index: 10
 
 .header-block
-  background-color: #fff
   height: 100px
   display: flex
   justify-content: space-between

@@ -12,7 +12,7 @@
         <form @submit.prevent="mutate" class="create-form">
           <div class="create-actions">
             <button class="create-action" type="submit">Save Post</button>
-            <router-link class="create-action" tag="span" to="/">Cancel</router-link>
+            <span class="create-action" @click="openDialog">Cancel</span>
           </div>
           <textarea class="create-title" placeholder="Title" v-model="title"></textarea>
           <div class="create-image-wrap" :style="{backgroundImage: `url('${uploadImage}')`}">
@@ -26,21 +26,27 @@
       </template>
       </ApolloMutation>
     </div>
+    <transition name="prompt-dialog-fade">
+      <Modal v-if="showDialog"/>
+    </transition>
   </div>
 </template>
 
 <script>
-import imageUpload from '@/mixins/ImageUpload'
 import { ADD_POST } from '@/gql/mutations'
 import { GET_POSTS } from '@/gql/queries'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import Button from '@/components/Button'
+import Modal from '@/components/Modal'
+import imageUpload from '@/mixins/ImageUpload'
+import { mapMutations, mapGetters } from 'vuex'
 
 export default {
   name: 'Create',
   components: {
     Breadcrumbs,
-    Button
+    Button,
+    Modal
   },
   mixins: [imageUpload],
   data() {
@@ -54,9 +60,11 @@ export default {
   computed: {
     uploadImage() {
       return this.image
-    }
+    },
+    ...mapGetters(['showDialog'])
   },
   methods: {
+    ...mapMutations(['openDialog']),
     onDone() {
       this.$router.replace('/')
     },

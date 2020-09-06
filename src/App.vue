@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :style="[showForm ? {'overflow' : 'hidden', 'height' : '100vh'} : '']">
+  <div id="app" :style="[showForm || showDialog ? {'overflow' : 'hidden', 'height' : '100vh'} : '']">
     <Header/>
     <Form/>
     <transition name="page-fade">
@@ -24,7 +24,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'showForm'
+      'showForm',
+      'showDialog'
     ])
   },
   methods: {
@@ -70,5 +71,16 @@ button
 .page-fade-enter,
 .page-fade-leave-to
   opacity: 0
+
+.prompt-dialog-fade-enter-active,
+.prompt-dialog-fade-leave-active
+  transition-property: opacity, transform
+  transition-timing-function: ease-out
+  transition-duration: 300ms
+
+.prompt-dialog-fade-enter,
+.prompt-dialog-fade-leave-to
+  opacity: 0
+  transform: scale(1.1)
 
 </style>
