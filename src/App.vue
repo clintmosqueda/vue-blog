@@ -83,4 +83,15 @@ button
   opacity: 0
   transform: scale(1.1)
 
+.login-transition-enter-active,
+.login-transition-leave-active
+  transition-property: opacity, transform
+  transition-timing-function: ease-out
+  transition-duration: 300ms
+
+.login-transition-enter,
+.login-transition-leave-to
+  opacity: 0
+  transform: translateY(100px)
+
 </style>

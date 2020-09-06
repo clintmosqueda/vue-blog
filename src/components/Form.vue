@@ -1,15 +1,17 @@
 <template>
   <section class="form">
-    <div class="form-block" v-if="showForm">
-      <div class="form-content">
-        <div class="form-login" v-if="showFormRegister">
-          <Register />
-        </div>
-        <div class="form-register" v-else>
-          <Login />
+    <transition name="login-transition">
+      <div class="form-block" v-if="showForm">
+        <div class="form-content">
+          <div class="form-login" v-if="showFormRegister">
+            <Register />
+          </div>
+          <div class="form-register" v-else>
+            <Login />
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </section>
 </template>
 
