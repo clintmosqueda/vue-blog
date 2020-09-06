@@ -3,7 +3,7 @@
     <div class="article-image-wrap">
       <div class="article-image" :style="`backgroundImage: url(${thumbnail})`"></div>
     </div>
-    <time class="article-date">{{date | dateFormat}}</time>
+    <time class="article-date">{{date | dateFormat | replaceDot}}</time>
     <h3 class="article-title">{{title}}</h3>
   </article>
 </template>

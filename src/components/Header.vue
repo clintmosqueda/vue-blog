@@ -2,7 +2,7 @@
   <div class="header">
     <div class="wrapper">
       <header class="header-block">
-        <router-link to="/"><img src="../assets/logo.png" alt="logo"></router-link>
+        <router-link to="/" class="header-logo"><img src="../assets/logo.png" alt="logo"></router-link>
         <template v-if="authenticatedStatus">
           <button @click="logout" class="header-button">LOGOUT</button>
         </template>
@@ -48,6 +48,10 @@ export default {
   justify-content: space-between
   align-items: center
 
+.header-logo
+  display: inline-block
+  margin-top: 6px
+
 .header-button
   font-family: 'Montserrat', sans-serif
   font-size: 18px
@@ -56,4 +60,6 @@ export default {
   cursor: pointer
   background: transparent
   border: none
+  display: inline-block
+  margin-top: 7px
 </style>

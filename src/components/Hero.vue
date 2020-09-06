@@ -8,16 +8,16 @@
         <section 
           class="hero-image"
           :style="`backgroundImage: url(${post.image ? post.image : dummyImage})`">
-          <div class="wrapper">
+          <!-- <div class="wrapper"> -->
             <div class="hero-content">
               <div class="hero-content-inner">
                 <div class="hero-heading-wrap">
                   <h2 class="hero-heading">{{post.title}}</h2>
                 </div>
-                <time class="hero-time" v-bind:dateTime="post.createdAt">{{post.createdAt | dateFormat}}</time>
+                <time class="hero-time" v-bind:dateTime="post.createdAt">{{post.createdAt | dateFormat | replaceDot}}</time>
               </div>
             </div>
-          </div>
+          <!-- </div> -->
         </section>
       </div>
     </div>
@@ -32,15 +32,16 @@
       </span>
     </div>
     <div class="hero-arrows">
-      <button class="hero-arrow hero-prev" @click="handlePrev">&lt;</button>
-      <button class="hero-arrow hero-next" @click="handleNext">&gt;</button>
+      <button class="hero-arrow hero-prev" @click="handlePrev"><span :style="`backgroundImage: url(${arrowIcon})`" class="hero-arrow-icon"></span></button>
+      <button class="hero-arrow hero-next" @click="handleNext"><span :style="`backgroundImage: url(${arrowIcon})`" class="hero-arrow-icon"></span></button>
     </div>
   </div>
 </template>
 
 <script>
 import dummyImage from '@/assets/no-image.png'
-import { GET_POSTS } from "@/gql/queries.js";
+import arrowIcon from '@/assets/arrow.png'
+import { GET_POSTS } from "@/gql/queries.js"
 
 export default {
   name: 'Hero',
@@ -49,6 +50,7 @@ export default {
       slide: 1,
       maxSlide: 3,
       dummyImage,
+      arrowIcon,
       posts: [],
     }
   },
@@ -113,10 +115,12 @@ export default {
   justify-content: center
   align-items: flex-end
   flex-shrink: 0
+  padding: 0 207px
 
 .hero-content-inner
   width: 560px
   text-align: right
+  padding-top: 58px
 
 .hero-heading-wrap
   opacity: 0
@@ -144,7 +148,8 @@ export default {
   font-size: 28px
   font-family: 'Montserrat', sans-serif
   letter-spacing: 0.2em
-  margin-top: 24px
+  margin-top: 21px
+  margin-right: -36px
   display: block
   opacity: 0
   transform: translateX(100px)
@@ -187,7 +192,8 @@ export default {
   display: flex
   justify-content: space-between
   z-index: 1
-  padding: 0 30px
+  padding: 0 44px
+  margin-top: 2px
 
 .hero-arrow
   appearance: none
@@ -201,5 +207,17 @@ export default {
   &:focus,
   &:active
     outline: none
+
+.hero-prev
+  .hero-arrow-icon
+    transform: scale(-1,1)
+
+.hero-arrow-icon
+  display: inline-block
+  width: 25px
+  height: 25px
+  background-position: center
+  background-repeat: no-repeat
+  background-size: contain
 
 </style>

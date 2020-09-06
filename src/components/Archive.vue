@@ -98,13 +98,14 @@ export default {
 .archive-content
   display: flex
   flex-wrap: wrap
-  margin: 0 -20px
+  justify-content: space-between
+  // margin: 0 -20px
   padding-bottom: 30px
   transition: all 500ms ease-out
 
 .archive-link
-  width: calc((100%/3) - 40px)
-  margin: 0 20px 40px
+  width: 340px
+  margin: 0 0 40px
   display: block
   color: #101010
   text-decoration: none

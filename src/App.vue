@@ -53,7 +53,7 @@ body
 
 .wrapper
   margin: 0 auto
-  width: 1100px
+  width: 1120px
 
 button
   cursor: pointer

@@ -13,6 +13,13 @@ Vue.filter('dateFormat', function(date) {
   return
 })
 
+Vue.filter('replaceDot', function (date) {
+  if (date) {
+    return date.split("-").join(".")
+  }
+  return
+})
+
 new Vue({
   router,
   store,

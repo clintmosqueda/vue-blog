@@ -8,13 +8,20 @@
     </div>
     <div class="footer-copyright">
       <small>Copyright©2007-2019 Blog Inc.</small>
-      <span @click="scrollTop()" class="footer-back2top"><span class="footer-back2top-icon"></span> TOP</span> 
+      <span @click="scrollTop()" class="footer-back2top"><span :style="`backgroundImage: url(${arrowTopIcon})`" class="footer-back2top-icon"></span> TOP</span> 
     </div>
   </footer>
 </template>
 
 <script>
+import arrowTopIcon from '@/assets/arrow-top.png'
+
 export default {
+  data() {
+    return {
+      arrowTopIcon
+    }
+  },
   methods: {
     scrollTop() {
       window.scrollTo({top: 0, behavior: 'smooth'});
@@ -69,4 +76,11 @@ export default {
   font-family: 'Montserrat', sans-serif
   letter-spacing: 0.09em
   cursor: pointer
+
+.footer-back2top-icon
+  display: inline-block
+  width: 17px
+  height: 28px
+  background-position: center
+  background-repeat: no-repeat
 </style>

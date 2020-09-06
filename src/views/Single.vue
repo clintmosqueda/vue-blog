@@ -6,7 +6,7 @@
         <span class="single-action" @click="onEdit">Edit Post</span>
       </div>
       <div class="single-header">
-        <time class="single-time">{{post.createdAt | dateFormat}}</time>
+        <time class="single-time">{{post.createdAt | dateFormat | replaceDot}}</time>
         <h1 class="single-title">{{post.title}}</h1>
         <div class="single-image" :style="`backgroundImage: url(${featureImage})`"></div>
       </div>
